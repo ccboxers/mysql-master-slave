@@ -1,0 +1,2 @@
+FROM mysql
+RUN sed -i '/\[mysqld\]/a server_id=2\nbinlog-ignore-db=mysql\nlog-bin=replicas-mysql-slave1-bin\nbinlog_cache_size=1M\nbinlog_format=mixed\nexpire_logs_days=7\nslave_skip_errors=1062\nrelay_log=replicas-mysql-relay-bin\nlog_slave_updates=1\nread_only=1\n' /etc/mysql/my.cnf

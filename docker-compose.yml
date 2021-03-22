@@ -1,0 +1,48 @@
+version: "3.8"
+services:
+  mysql-master:
+    container_name: mysql-master
+    build: ./docker/master
+    hostname: mysql-master
+    networks:
+      - lnmp_net
+    links:
+      - mysql-slave
+    ports:
+      - "33065:3306"
+    environment:
+      - "MYSQL_ROOT_PASSWORD=root"
+      - "MYSQL_DATABASE=clown"
+    restart: always
+  mysql-slave:
+    container_name: mysql-slave
+    build: ./docker/slave
+    networks:
+      - lnmp_net
+    environment:
+      - "MYSQL_ROOT_PASSWORD=root"
+      - "MYSQL_DATABASE=clown"
+    ports:
+      - "33066:3306"
+    restart: always
+    hostname: mysql-slave
+  dns:
+    container_name: dns
+    build: ./docker/dns/
+    hostname: dns
+    networks:
+      - lnmp_net
+    ports:
+      - 53:53/udp
+      - 5380:8080
+    volumes:
+      - ./conf/dnsmasq.conf:/etc/dnsmasq.conf
+networks:
+  lnmp_net:
+    name: lnmp_net
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.110.0/10
+
+
